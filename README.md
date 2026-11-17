@@ -13,16 +13,16 @@ spec:
   hostNetwork: false
   hostPID: false
   hostIPC: false
-  # Needs user namespaces
+  # Requires user namespaces
   hostUsers: false
   shareProcessNamespace: false
   securityContext:
-    # Needs ownership-capable volumes
+    # Requires ownership-capable volumes
     fsGroup: 65535
     fsGroupChangePolicy: Always
     supplementalGroups: []
     sysctls: []
-    # Needs SELinux, CSI support
+    # Requires SELinux, CSI support
     seLinuxChangePolicy: MountOption
   containers:
     - name: pause
@@ -30,22 +30,22 @@ spec:
       imagePullPolicy: IfNotPresent
       securityContext:
         runAsNonRoot: true
-        # Needs image uid
+        # Requires image uid
         runAsUser: 65535
         runAsGroup: 65535
         privileged: false
         allowPrivilegeEscalation: false
-        # Needs writable mounts
+        # Requires writable mounts
         readOnlyRootFilesystem: true
         procMount: Default
         capabilities:
           drop: ["ALL"]
-        # Needs SELinux
+        # Requires SELinux
         seLinuxOptions: {}
-        # Needs seccomp
+        # Requires seccomp
         seccompProfile:
           type: RuntimeDefault
-        # Needs AppArmor
+        # Requires AppArmor
         appArmorProfile:
           type: RuntimeDefault
         windowsOptions:
