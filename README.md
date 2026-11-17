@@ -1,3 +1,8 @@
+# k8s-most-restrictive-security-context
+
+The most restrictive Pod: every stable (GA, Kubernetes 1.37) security field declared. Accepted by a 1.37 API server.
+
+```yaml
 # The most restrictive Pod: every stable (GA, Kubernetes 1.37) security field declared.
 # Not included: supplementalGroupsPolicy (still beta).
 apiVersion: v1
@@ -67,3 +72,4 @@ spec:
     - name: tmp
       emptyDir:
         sizeLimit: 64Mi
+```
