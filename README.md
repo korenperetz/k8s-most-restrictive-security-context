@@ -27,7 +27,7 @@ spec:
     seLinuxChangePolicy: MountOption
   containers:
     - name: pause
-      image: registry.k8s.io/pause:3.10
+      image: registry.k8s.io/pause:3.10.2
       imagePullPolicy: IfNotPresent
       securityContext:
         runAsNonRoot: true
