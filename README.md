@@ -8,7 +8,7 @@ The most restrictive Pod: every stable (GA, Kubernetes 1.37) security field decl
 apiVersion: v1
 kind: Pod
 metadata:
-  name: most-restrictive
+  name: pause
 spec:
   automountServiceAccountToken: false
   enableServiceLinks: false
@@ -26,9 +26,9 @@ spec:
     sysctls: []
     seLinuxChangePolicy: MountOption
   containers:
-    - name: app
+    - name: pause
       image: registry.k8s.io/pause:3.10
-      imagePullPolicy: IfNotPresent
+      imagePullPolicy: Always
       securityContext:
         runAsNonRoot: true
         runAsUser: 65535
