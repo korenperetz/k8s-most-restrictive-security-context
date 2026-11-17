@@ -18,22 +18,13 @@ spec:
   # User namespaces: root in the container is an unprivileged uid on the node.
   hostUsers: false
   shareProcessNamespace: false
+  # Pod-only fields. The rest are declared per container, which overrides the pod.
   securityContext:
-    runAsNonRoot: true
-    runAsUser: 65535
-    runAsGroup: 65535
     fsGroup: 65535
     fsGroupChangePolicy: Always
     supplementalGroups: []
     sysctls: []
-    seLinuxOptions: {}
     seLinuxChangePolicy: MountOption
-    seccompProfile:
-      type: RuntimeDefault
-    appArmorProfile:
-      type: RuntimeDefault
-    windowsOptions:
-      hostProcess: false
   containers:
     - name: app
       image: registry.k8s.io/pause:3.10
