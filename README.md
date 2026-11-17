@@ -28,7 +28,7 @@ spec:
   containers:
     - name: app
       image: registry.k8s.io/pause:3.10
-      imagePullPolicy: Always
+      imagePullPolicy: IfNotPresent
       securityContext:
         runAsNonRoot: true
         runAsUser: 65535
