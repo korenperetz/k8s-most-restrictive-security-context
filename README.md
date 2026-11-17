@@ -1,9 +1,8 @@
 # k8s-most-restrictive-security-context
 
-The most restrictive Pod: every stable (GA, Kubernetes 1.37) security field declared. Accepted by a 1.37 API server. Fields that only work when the node supports them say so in a comment.
+Last updated: 1.37
 
 ```yaml
-# Not included: supplementalGroupsPolicy (still beta).
 apiVersion: v1
 kind: Pod
 metadata:
@@ -14,19 +13,16 @@ spec:
   hostNetwork: false
   hostPID: false
   hostIPC: false
-  # Depends on: user namespaces on the node (Linux 6.3+, containerd 2.0+ or CRI-O 1.25+,
-  # user.max_user_namespaces > 0). Bottlerocket disables them: the sandbox fails to start.
+  # Needs user namespaces
   hostUsers: false
   shareProcessNamespace: false
-  # Pod-only fields. The rest are declared per container, which overrides the pod.
   securityContext:
-    # Depends on: a volume type that supports ownership changes (emptyDir, most CSI drivers).
+    # Needs ownership-capable volumes
     fsGroup: 65535
     fsGroupChangePolicy: Always
     supplementalGroups: []
     sysctls: []
-    # Depends on: SELinux enforcing on the node (Bottlerocket, RHEL); ignored otherwise.
-    # MountOption also needs the volume's CSI driver to support it, else falls back to Recursive.
+    # Needs SELinux, CSI support
     seLinuxChangePolicy: MountOption
   containers:
     - name: pause
@@ -34,26 +30,24 @@ spec:
       imagePullPolicy: IfNotPresent
       securityContext:
         runAsNonRoot: true
-        # Depends on: the image working as this uid (pause runs as 65535).
+        # Needs image uid
         runAsUser: 65535
         runAsGroup: 65535
         privileged: false
         allowPrivilegeEscalation: false
-        # Depends on: the app writing only to mounted volumes.
+        # Needs writable mounts
         readOnlyRootFilesystem: true
         procMount: Default
         capabilities:
           drop: ["ALL"]
-        # Depends on: SELinux on the node; {} takes the runtime's default label. Ignored otherwise.
+        # Needs SELinux
         seLinuxOptions: {}
-        # Depends on: seccomp in the kernel and runtime (containerd, CRI-O).
+        # Needs seccomp
         seccompProfile:
           type: RuntimeDefault
-        # Depends on: AppArmor enabled on the node (Ubuntu, Debian). On nodes without it
-        # (Bottlerocket, AL2023, RHEL) the kubelet rejects the pod.
+        # Needs AppArmor
         appArmorProfile:
           type: RuntimeDefault
-        # Ignored on Linux; rejected if spec.os.name is linux.
         windowsOptions:
           hostProcess: false
       resources:
@@ -69,7 +63,6 @@ spec:
         - name: tmp
           mountPath: /tmp
   volumes:
-    # The only writable path, on disk, capped.
     - name: tmp
       emptyDir:
         sizeLimit: 64Mi
